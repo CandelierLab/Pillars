@@ -14,8 +14,8 @@ tag = 'g4dmemf12';
 ws = 80;
 wso = 100; 
 
-% i = 201;
-i = 214;
+i = 245;
+% i = 214;
 
 force = true;
 
@@ -94,17 +94,19 @@ clf
 
 hold on
 
-plot(x-xi, y-yi, 'k-')
-plot(u, v, 'm.-')
+% plot(x-xi, y-yi, 'k-')
+plot(u, v, '.-')
 
-axis equal off
+axis equal
 box on
 grid on
 
-legend({'x,y', 'u,v'});
+% legend({'x,y', 'u,v'});
 
-xlabel('x, u (pix)');
-ylabel('y, v (pix)');
+% xlabel('x, u (pix)');
+% ylabel('y, v (pix)');
+xlabel('u (pix)');
+ylabel('v (pix)');
 title([F.tag ' - pillar ' num2str(i)]);
 
 figure(2)

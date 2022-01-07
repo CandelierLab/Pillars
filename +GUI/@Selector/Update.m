@@ -81,7 +81,7 @@ if this.mode.kernel
     
     imagesc(RGB, 'parent', this.Axes.XY);
 
-    axis(this.Axes.XY, 'on', 'xy', 'tight');
+    axis(this.Axes.XY, 'off');
     caxis(this.Axes.XY, 'auto');
     
 else
@@ -123,8 +123,8 @@ else
             'ButtonDownFcn', @this.MouseInput);
         
     end
-        
-    axis(this.Axes.XY, 'equal');
+    
+    axis(this.Axes.XY, 'on', 'equal');
     grid(this.Axes.XY, 'on');
     box(this.Axes.XY, 'on');
     
