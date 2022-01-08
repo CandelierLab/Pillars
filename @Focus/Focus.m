@@ -147,15 +147,21 @@ classdef Focus < matlab.mixin.Copyable
             
             switch computer
                 
-                case 'PCWIN64'
+                case 'PCWIN64'  % Windows
+                    test = {};
                     
-                case 'GLNXA64'
+                case 'GLNXA64'  % Linux
                     test = {'/home/ljp/Science/Projects/Misc/Pillars/' ...
                         '/home/raphael/Science/Projects/Misc/Pillars/'};
+                    
+                case 'MACI64'   % Mac
+                    test = {};
+                    
             end
             
             for i = 1:numel(test)
                 if exist(test{i}, 'dir')
+                    if ~strcmp(test{i}(end), filesep), test{i}(end+1) = filesep; end
                     R = test{i};
                     break;
                 end
