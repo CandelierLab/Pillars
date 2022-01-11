@@ -24,32 +24,9 @@ for i = 1:numel(this.P)
     this.P(i).bx = movmedian(this.P(i).x, this.bws);
     this.P(i).by = movmedian(this.P(i).y, this.bws);
     
-    % --- Rotating coordinates
+    % --- Radial coordinate
     
-    this.P(i).u = NaN(this.F.T, 1);
-    this.P(i).v = NaN(this.F.T, 1);
-        
-    x = (this.P(i).x - this.P(i).bx)';
-    y = (this.P(i).y - this.P(i).by)';
-    
-    for ti = 1:this.F.T
-        
-        I = max(round(ti-this.ews/2),1):min(round(ti+this.ews/2), this.F.T);
-        
-        % Check for NaNs
-        if any(isnan(x(I))), continue; end
-        
-        coeff = pca([x(I) y(I)]);
-        
-        % Eigenvector
-        V1 = sign(skewness(x(I)*coeff(1,1) + y(I)*coeff(2,1)))*coeff(:,1)';
-        
-        % New coordinates
-        this.P(i).u(ti) = x(ti)*V1(1) + y(ti)*V1(2);
-        this.P(i).v(ti) = -x(ti)*V1(2) + y(ti)*V1(1);
-        
-        
-    end
+    this.P(i).r = sqrt((this.P(i).x - this.P(i).bx).^2 + (this.P(i).y - this.P(i).by).^2);
     
     % Display
     if this.verbose && ~mod(i,100)
