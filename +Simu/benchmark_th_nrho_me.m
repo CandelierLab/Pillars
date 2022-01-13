@@ -6,14 +6,17 @@ warning('off', 'images:imshow:magnificationMustBeFitForDockedFigure');
 T = 2000;
 N = 1000;
 
+slope = 2.5;
+
 th_n = 1:5;
-th_r = 5.201./sqrt(th_n);
 
 A = 1:10;
 
-slope = 2.25;
+force = true;
 
-force = false;
+% -------------------------------------------------------------------------
+
+th_rho = 4.77*th_n.^(-2/3);
 
 % =========================================================================
 
@@ -41,11 +44,10 @@ if ~exist('mu', 'var') || force
                 
                 Dtc = Analysis.Detector(Tr);
                 
-                Dtc.detect('th_nr', 'th_n', th_n(i), 'th_r', th_r(i));
-                %    'preprocess', struct('type', 'Gaussian', 'sigma', 1));
+                Dtc.detect('th_nrho', 'th_n', th_n(i), 'th_r', th_rho(i));
                 
                 me(k) = Dtc.compare(GTr);
-                
+                            
             end
             
             mu(i,j) = sum(me)/N;
@@ -72,7 +74,7 @@ for i = 1:numel(th_n)
 
     plot(A, mu(i,:), '.-', 'color', cm(i,:));
     
-    line([1 1]*th_r(i), ylim, 'LineStyle', ':', 'color', cm(i,:), ...
+    line([1 1]*th_rho(i), ylim, 'LineStyle', ':', 'color', cm(i,:), ...
         'HandleVisibility', 'off')
     
 end
@@ -81,6 +83,6 @@ box on
 
 xlabel('A')
 ylabel('\mu')
-legend(arrayfun(@(x) ['th_n = ' num2str(x)], th_n, 'UniformOutput', false))
-title('Ratio of missed events');
+legend(arrayfun(@(x) ['th_n = ' num2str(x)], th_n, 'UniformOutput', false), 'location', 'SouthWest')
+title('Ratio of missed events \mu');
 

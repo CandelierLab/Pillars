@@ -6,10 +6,10 @@ warning('off', 'images:imshow:magnificationMustBeFitForDockedFigure');
 T = 200;
 
 th_n = 1;
-th_r = 5.201;
+th_rho = 5.201;
 
 A = 1:2:9;
-slope = 2.25;
+slope = 2.5;
 
 force = false;
 
@@ -18,8 +18,6 @@ force = false;
 [Tr, GTr] = Simu.generate(T, 'np', numel(A), 'amp', A, ...
     'ang', pi/3, 'slope', slope);
     
-r = sqrt(Tr.x.^2 + Tr.y.^2) ;
-
 % === Display =============================================================
 
 figure(1)
@@ -36,11 +34,12 @@ for i = 1:numel(GTr)
     
 end
 
-line([1 T], [1 1]*th_r, 'LineStyle', '--', 'color', [1 1 1]*0.5);
+line([1 T], [0 0], 'LineStyle', ':', 'color', [1 1 1]*0.5);
+line([1 T], [1 1]*th_rho, 'LineStyle', '--', 'color', [1 1 1]*0.5);
 
-plot(r, '.-')
+plot(Tr.rho, '.-')
 
 box on
 
 xlabel('Time (frames)');
-ylabel('r (\sigma_{x,y}=1)')
+ylabel('\rho')

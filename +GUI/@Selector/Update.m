@@ -137,19 +137,17 @@ title(this.Axes.XY, ['\color{white} Pilar #' num2str(this.current, '%04i')]);
 cla(this.Axes.Trace)
 hold(this.Axes.Trace, 'on')
 
-d = sqrt((this.P(this.current).x-xm).^2 + (this.P(this.current).y-ym).^2);
-
 for i = 1:nb
     
     I = (i-1)*cb+1:min(i*cb+1, this.F.T);
     
-    plot(this.Axes.Trace, I, d(I), '-', 'color', cm(i,:), ...
+    plot(this.Axes.Trace, I, this.P(this.current).rho(I), '-', 'color', cm(i,:), ...
         'ButtonDownFcn', @this.MouseInput);
     
 end
 
 
-plot(this.Axes.Trace, 1:this.F.T, d, 'w.', ....
+plot(this.Axes.Trace, 1:this.F.T, this.P(this.current).rho, 'w.', ....
     'ButtonDownFcn', @this.MouseInput);
 
 % --- Zoom
@@ -159,6 +157,8 @@ if this.zoom.Trace.active
 else
     xlim(this.Axes.Trace, [1 this.F.T]);
 end
+
+ylabel(this.Axes.Trace, '\rho')
 
 % --- Text ----------------------------------------------------------------
 

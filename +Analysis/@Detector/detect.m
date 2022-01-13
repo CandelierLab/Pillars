@@ -4,26 +4,37 @@ function detect(this, varargin)
 
 p = inputParser;
 p.addRequired('Algorithm', @ischar);                    % Algorithm
-p.addParameter('preprocess', [], @iscell);              % Preprocess
+p.addParameter('preprocess', struct('type', ''), @isstruct);            % Preprocess
 p.addParameter('th_n', NaN, @isnumeric);                % Threshold on n
-p.addParameter('th_r', NaN, @isnumeric);                % Threshold on r
+p.addParameter('th_rho', NaN, @isnumeric);              % Threshold on rho
 p.addParameter('verbose', this.verbose, @islogical);    % Verbose
 p.parse(varargin{:});
 
 Algo = p.Results.Algorithm;
 PP = p.Results.preprocess;
 th_n = p.Results.th_n;
-th_r = p.Results.th_r;
+th_rho = p.Results.th_rho;
 verbose = p.Results.verbose;
 
-% -------------------------------------------------------------------------
+% --- PRE-PROCESS ---------------------------------------------------------
+
+switch PP.type
+    
+    case 'smooth'
+        rho = smooth(this.Tr.rho, PP.WindowSize);
+        
+    otherwise
+        rho = this.Tr.rho;
+end
+
+% --- DETECTION -----------------------------------------------------------
 
 switch Algo
     
-    case 'th_nr'
+    case 'th_nrho'
         
-        % Threshold in R
-        I = find(sqrt(this.Tr.x.^2 + this.Tr.y.^2) >= th_r);
+        % Threshold in rho
+        I = find(rho >= th_rho);
         
         % Group
         Gi = [1 ; 1+cumsum(diff(I)>1)];

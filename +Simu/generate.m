@@ -76,4 +76,13 @@ end
 % --- Gaussianization
 
 Tr.r = sqrt(Tr.x.^2 + Tr.y.^2);
-Tr.rho = sqrt(2)*erfinv(2*gammainc((Tr.r/sigma).^2/2, 1)-1);
+
+% Slightly less accurate computation
+% % % rho = sqrt(2)*erfinv(2*gammainc((Tr.r).^2/2, 1)-1);
+    
+% Slightly more accurate computation
+Tr.rho = sqrt(2)*erfinv(1-2*gammainc((Tr.r).^2/2, 1, 'upper'));
+    
+% Regularization of infinite values
+I = ~isfinite(Tr.rho);
+Tr.rho(I) = Tr.r(I);
