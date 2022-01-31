@@ -56,10 +56,10 @@ end
     
 % Slightly more accurate computation
 rho = sqrt(2)*erfinv(1-2*gammainc((R/sigma_x).^2/2, 1, 'upper'))+1/2;
-    
+   
 % Regularization of infinite values
 I = ~isfinite(rho);
-rho(I) = R(I);
+rho(I) = R(I)/sigma_x;
 
 for i = 1:numel(this.P)
     this.P(i).rho = rho(i,:);
