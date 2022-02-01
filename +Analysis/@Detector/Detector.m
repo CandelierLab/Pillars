@@ -13,7 +13,8 @@ classdef Detector < matlab.mixin.Copyable
         % --- Output
         
         % Events
-        Ev = {}
+        Candidates
+        Events
         
         % --- Misc
         
@@ -26,22 +27,16 @@ classdef Detector < matlab.mixin.Copyable
     methods
         
         % --- Constructor -------------------------------------------------
-        function this = Detector(varargin)
+        function this = Detector(Tr, arg)
             
-            % --- Input ---------------------------------------------------
-            
-            p = inputParser;
-            p.addRequired('Tr', @(x) true);                    % tag
-            p.addParameter('verbose', true, @islogical);       % Verbose
-            p.parse(varargin{:});
-            
-            this.Tr = p.Results.Tr;
-            this.verbose = p.Results.verbose;
-            
-            % -------------------------------------------------------------
-         
-            
-            
+            arguments
+                Tr struct
+                arg.verbose logical = true
+            end
+
+            this.Tr = Tr;
+            this.verbose = arg.verbose;
+                 
         end
         
    end

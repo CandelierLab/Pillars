@@ -44,6 +44,31 @@ if this.verbose
     fprintf(' %0.2f sec (sigma = %.03f)\n', toc, sigma_x);
 end
 
+% --- Reduced coordinates
+
+if this.verbose
+    fprintf('  * Reducing coordinates ...');
+    tic
+end
+
+for i = 1:numel(this.P)
+
+    if ~isfield(this.P, 'fx') || isempty(this.P(i).fx)
+        this.P(i).fx = this.P(i).x;
+        this.P(i).fy = this.P(i).y;
+    end
+
+    this.P(i).x = (this.P(i).fx - this.P(i).bx)/sigma_x;
+    this.P(i).y = (this.P(i).fy - this.P(i).by)/sigma_x;
+
+end
+
+R = R/sigma_x;
+
+if this.verbose
+    fprintf(' %0.2f sec\n', toc);
+end
+
 % --- Gaussianization
 
 if this.verbose
@@ -52,14 +77,14 @@ if this.verbose
 end
 
 % Slightly less accurate computation
-% % % rho = sqrt(2)*erfinv(2*gammainc((R/sigma_x).^2/2, 1)-1)+1/2;
+% % % rho = sqrt(2)*erfinv(2*gammainc((R).^2/2, 1)-1)+1/2;
     
 % Slightly more accurate computation
-rho = sqrt(2)*erfinv(1-2*gammainc((R/sigma_x).^2/2, 1, 'upper'))+1/2;
+rho = sqrt(2)*erfinv(1-2*gammainc((R).^2/2, 1, 'upper'))+1/2;
    
 % Regularization of infinite values
 I = ~isfinite(rho);
-rho(I) = R(I)/sigma_x;
+rho(I) = R(I);
 
 for i = 1:numel(this.P)
     this.P(i).rho = rho(i,:);

@@ -5,11 +5,12 @@ warning('off', 'images:imshow:magnificationMustBeFitForDockedFigure');
 
 % --- Data tag
 
-% tag = 'g4dmemf12';
+% tag = 'g4-2';
+tag = 'g4dmemf12';
 % tag = 'g4dmemf12-3';
 % tag = 'g4dmemf12-4';
 % tag = 'g4gcb';
-tag = 'g4gcb-2';
+% tag = 'g4gcb-2';
 
 % --- Misc options
 
@@ -50,7 +51,7 @@ if ~exist(F.File.trajectories, 'file') || force
 
     % Noise Gaussianization
     Tr.gaussianization();
-    
+
     % Clean trajectories
     Tr.clean();
     

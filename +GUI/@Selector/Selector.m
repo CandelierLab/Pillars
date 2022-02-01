@@ -1,5 +1,5 @@
 classdef Selector < handle
-    %Selector | A class for selecting pilars to keep
+    %Selector | A class for selecting pillars to keep
     
     % // Manage NaNs in traj !
     %   - Display in text
@@ -26,8 +26,8 @@ classdef Selector < handle
         X0
         Y0      
         
-        % Width of median smooth
-        wms = 80;
+        % Baseline window size
+        bws = 80;
         
         % --- Internal states
         
@@ -66,8 +66,8 @@ classdef Selector < handle
             this.P = Tmp.P;
             this.N = numel(this.P);
                         
-            this.X0 = arrayfun(@(p) p.x(1), this.P);
-            this.Y0 = arrayfun(@(p) p.y(1), this.P);
+            this.X0 = arrayfun(@(p) p.fx(1), this.P);
+            this.Y0 = arrayfun(@(p) p.fy(1), this.P);
             
             % --- Initial checks ------------------------------------------
                         

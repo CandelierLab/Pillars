@@ -15,7 +15,7 @@ verbose = prs.Results.verbose;
 % =========================================================================
 
 if verbose
-    fprintf('--- Tracking pilar %i\n', p);
+    fprintf('--- Tracking pillar %i\n', p);
 end
 
 % Output
@@ -38,7 +38,7 @@ if verbose
 end
 
 if wb
-    wbh = waitbar(0, ['Tracking pilar ' num2str(p)]);
+    wbh = waitbar(0, ['Tracking pillar ' num2str(p)]);
 end
 
 for t = 1:this.F.T

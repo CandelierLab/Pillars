@@ -4,7 +4,7 @@ function Update(this, varargin)
 
 % --- Check NaNs in traj
 
-nN = nnz(isnan(this.P(this.current).x));
+nN = nnz(isnan(this.P(this.current).fx));
 
 if nN
     this.P(this.current).checked = false;
@@ -16,8 +16,8 @@ I = arrayfun(@(p) p.checked, this.P);
 
 % --- Median trajectory
 
-xm = movmedian(this.P(this.current).x, this.wms);
-ym = movmedian(this.P(this.current).y, this.wms);
+% xm = movmedian(this.P(this.current).x, this.wms);
+% ym = movmedian(this.P(this.current).y, this.wms);
 
 % --- Colors
 
@@ -94,15 +94,15 @@ else
         
             I = (i-1)*cb+1:min(i*cb+1, this.F.T);
             
-            plot(this.Axes.XY, this.P(this.current).x(I), this.P(this.current).y(I), '-', ...
+            plot(this.Axes.XY, this.P(this.current).fx(I), this.P(this.current).fy(I), '-', ...
                 'color', cm(i,:), 'ButtonDownFcn', @this.MouseInput);
             
         end
         
-        plot(this.Axes.XY, this.P(this.current).x, this.P(this.current).y, 'w.', ...
+        plot(this.Axes.XY, this.P(this.current).fx, this.P(this.current).fy, 'w.', ...
             'ButtonDownFcn', @this.MouseInput);
         
-        plot(this.Axes.XY, xm, ym, 'r-', 'LineWidth', 1.5, ...
+        plot(this.Axes.XY, this.P(this.current).bx, this.P(this.current).by, 'r-', 'LineWidth', 1.5, ...
             'ButtonDownFcn', @this.MouseInput);
         
     else
@@ -111,13 +111,15 @@ else
         
             I = (i-1)*cb+1:min(i*cb+1, this.F.T);
             
-             plot(this.Axes.XY, this.P(this.current).x(I)-xm(I), this.P(this.current).y(I)-ym(I), '-', ...
-                'color', cm(i,:), 'ButtonDownFcn', @this.MouseInput);
+             plot(this.Axes.XY, this.P(this.current).fx(I) - this.P(this.current).bx(I), ...
+                 this.P(this.current).fy(I) - this.P(this.current).by(I), ...
+                 '-', 'color', cm(i,:), 'ButtonDownFcn', @this.MouseInput);
             
         end
         
-        plot(this.Axes.XY, this.P(this.current).x-xm, this.P(this.current).y-ym, 'w.', ...
-            'ButtonDownFcn', @this.MouseInput);
+        plot(this.Axes.XY, this.P(this.current).fx - this.P(this.current).bx, ...
+            this.P(this.current).fy - this.P(this.current).by, ...
+            'w.', 'ButtonDownFcn', @this.MouseInput);
         
         scatter(this.Axes.XY, 0, 0, 'ro', 'filled', ...
             'ButtonDownFcn', @this.MouseInput);

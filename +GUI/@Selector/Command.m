@@ -152,17 +152,42 @@ switch command
         
     case 'r'
         
+        % Get sigma_x
+        sigma_x = nanmean((this.P(this.current).fx-this.P(this.current).bx)./this.P(this.current).x);
+
+        % Define pTracker
         Tr = IP.pTracker(this.F, 'verbose', false);
         Tr.P = this.P;
         
         % Set inital position to nearest integer
-        Tr.P(this.current).x(1) = round(Tr.P(this.current).x(1));
-        Tr.P(this.current).y(1) = round(Tr.P(this.current).y(1));
+        Tr.P(this.current).x = round(Tr.P(this.current).fx);
+        Tr.P(this.current).y = round(Tr.P(this.current).fy);
         
+        % Track_once
         p = Tr.track_one(this.current, 'waitbar', true);
-        this.P(this.current).x = p.x;
-        this.P(this.current).y = p.y;
+
+        % --- Update fields
+
+        % Frame position
+        this.P(this.current).fx = p.x;
+        this.P(this.current).fy = p.y;
+
+        % Baseline
+        this.P(this.current).bx = movmedian(this.P(this.current).fx, this.bws);
+        this.P(this.current).by = movmedian(this.P(this.current).fy, this.bws);
+
+        % Reduced coordinates
+        this.P(this.current).x = (this.P(this.current).fx - this.P(this.current).bx)/sigma_x;
+        this.P(this.current).y = (this.P(this.current).fy - this.P(this.current).by)/sigma_x;
+
+        % Radial coordinates
+        this.P(this.current).r = sqrt((this.P(this.current).fx - this.P(this.current).bx).^2 + (this.P(this.current).fy - this.P(this.current).by).^2);
         
+        % Rho
+        this.P(this.current).rho = sqrt(2)*erfinv(1-2*gammainc((this.P(this.current).r/sigma_x).^2/2, 1, 'upper'))+1/2;
+        I = ~isfinite(this.P(this.current).rho);
+        this.P(this.current).rho(I) = this.P(this.current).r(I)/sigma_x;
+
         % Reset view
         this.mode.kernel = false;
         
