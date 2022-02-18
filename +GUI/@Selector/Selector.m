@@ -28,6 +28,11 @@ classdef Selector < handle
         
         % Baseline window size
         bws = 80;
+
+        % Conversion and thresholds
+        sigma
+        th_r
+        th_rho
         
         % --- Internal states
         
@@ -39,7 +44,7 @@ classdef Selector < handle
         
         mouseModifier = '';
         
-        % --- Display parameters
+        % --- Display properties
         
         Fig
         Axes = struct();
@@ -52,13 +57,23 @@ classdef Selector < handle
     methods
         
         % --- Constructor -------------------------------------------------
-        function this = Selector(F)
-            
+        function this = Selector(F, arg)
+                        
+            arguments
+                F
+                arg.th_rho double = 4.77
+            end
+
             clc
+
+            % --- Input
             
-            % --- Focus
-            
+            % Focus
             this.F = F;
+
+            % Threshold
+            this.th_rho = arg.th_rho;
+            this.th_r = sqrt(2*gammaincinv((-erf(this.th_rho/sqrt(2))+1)/2,1,'upper'));
                         
             % --- Trajectories
             
@@ -69,6 +84,9 @@ classdef Selector < handle
             this.X0 = arrayfun(@(p) p.fx(1), this.P);
             this.Y0 = arrayfun(@(p) p.fy(1), this.P);
             
+            % Noise dispersion
+            this.sigma = nanmean((this.P(1).fx-this.P(1).bx)./this.P(1).x);
+
             % --- Initial checks ------------------------------------------
                         
             % --- Checked status
@@ -79,8 +97,7 @@ classdef Selector < handle
             end
             
             % --- Display -------------------------------------------------
-            
-            
+                        
             % --- Figure
             
             this.Fig = figure('Name', 'Selector', 'Menu', 'none', 'ToolBar', 'none');

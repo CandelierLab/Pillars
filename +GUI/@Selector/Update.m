@@ -48,7 +48,7 @@ scatter(this.Axes.Image, this.X0(this.current), this.Y0(this.current), 400, 's',
     'MarkerEdgeColor', 'w', 'ButtonDownFcn', @this.MouseInput);
 
 colormap(this.Axes.Image, gray);
-axis(this.Axes.Image, 'on', 'xy', 'equal', 'tight');
+axis(this.Axes.Image, 'on', 'ij', 'equal', 'tight');
 caxis(this.Axes.Image, 'auto');
 
 % --- Zoom
@@ -107,23 +107,31 @@ else
         
     else
         
+        % --- Reduced trajectory
+
         for i = 1:nb
         
             I = (i-1)*cb+1:min(i*cb+1, this.F.T);
             
              plot(this.Axes.XY, this.P(this.current).fx(I) - this.P(this.current).bx(I), ...
-                 this.P(this.current).fy(I) - this.P(this.current).by(I), ...
+                 this.P(this.current).by(I) - this.P(this.current).fy(I), ...
                  '-', 'color', cm(i,:), 'ButtonDownFcn', @this.MouseInput);
             
         end
         
         plot(this.Axes.XY, this.P(this.current).fx - this.P(this.current).bx, ...
-            this.P(this.current).fy - this.P(this.current).by, ...
+            this.P(this.current).by - this.P(this.current).fy, ...
             'w.', 'ButtonDownFcn', @this.MouseInput);
         
         scatter(this.Axes.XY, 0, 0, 'ro', 'filled', ...
             'ButtonDownFcn', @this.MouseInput);
         
+        % --- Event threshold
+
+        theta = linspace(0, 2*pi, 200);
+        r = this.th_r*this.sigma;
+
+        plot(this.Axes.XY, r.*cos(theta), r.*sin(theta), 'r--');
     end
     
     axis(this.Axes.XY, 'on', 'equal');
@@ -148,9 +156,18 @@ for i = 1:nb
     
 end
 
+% --- Dots
 
-plot(this.Axes.Trace, 1:this.F.T, this.P(this.current).rho, 'w.', ....
-    'ButtonDownFcn', @this.MouseInput);
+T = 1:this.F.T;
+I = find(this.P(this.current).rho < this.th_rho);
+J = find(this.P(this.current).rho >= this.th_rho);
+
+h = plot(this.Axes.Trace, T(I), this.P(this.current).rho(I), '.', ...
+    Color=[1 1 1]*0.75, ButtonDownFcn=@this.MouseInput);
+uistack(h, 'bottom');
+
+plot(this.Axes.Trace, T(J), this.P(this.current).rho(J), 'w.', ...
+    ButtonDownFcn=@this.MouseInput);
 
 % --- Zoom
 
@@ -160,12 +177,22 @@ else
     xlim(this.Axes.Trace, [1 this.F.T]);
 end
 
+% --- Threshold
+
+aL = axis(this.Axes.Trace);
+r = rectangle(this.Axes.Trace, ...
+    Position = [aL(1) aL(3) aL(2)-aL(1) this.th_rho-aL(3)], ...
+    FaceColor = [[1 1 1]*0.5 0.35], ...
+    EdgeColor = 'none', ...
+    ButtonDownFcn=@this.MouseInput);
+uistack(r, 'bottom');
+
 ylabel(this.Axes.Trace, '\rho')
 
 % --- Text ----------------------------------------------------------------
 
 T = {};
-T{1} = [num2str(nnz(I)) ' pilars selected (out of ' num2str(this.N) ')'];
+T{1} = [num2str(nnz([this.P(:).checked])) ' pilars selected (out of ' num2str(this.N) ')'];
 T{2} = ['Current pilar: ' num2str(this.current, '%04i') ' (' num2str(nN) ' NaNs)'];
 
 this.Text.String = T;

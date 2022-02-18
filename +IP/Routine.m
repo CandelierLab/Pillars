@@ -48,7 +48,7 @@ if ~exist(F.File.trajectories, 'file') || force
     
     % Track all pilars
     Tr.track();
-
+   
     % Noise Gaussianization
     Tr.gaussianization();
 

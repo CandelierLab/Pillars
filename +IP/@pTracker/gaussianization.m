@@ -80,7 +80,7 @@ end
 % % % rho = sqrt(2)*erfinv(2*gammainc((R).^2/2, 1)-1)+1/2;
     
 % Slightly more accurate computation
-rho = sqrt(2)*erfinv(1-2*gammainc((R).^2/2, 1, 'upper'))+1/2;
+rho = sqrt(2)*erfinv(1-2*gammainc(R.^2/2, 1, 'upper'))+1/2;
    
 % Regularization of infinite values
 I = ~isfinite(rho);
