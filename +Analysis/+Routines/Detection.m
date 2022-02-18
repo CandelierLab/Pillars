@@ -12,7 +12,14 @@ tag = 'g4dmemf12';
 % tag = 'g4gcb';
 % tag = 'g4gcb-2';
 
+% --- Threshold
+
+th_rho = 4.77;
+
 % --- Misc options
+
+% File tag
+ftag = 'events';
 
 % Verbose
 verbose = true;
@@ -23,31 +30,41 @@ force = true;
 
 F = Focus(tag, 'verbose', verbose);
 
-fname = [F.Dir.Files 'candidates.mat'];
-
 % =========================================================================
 
-if ~exist(fname, 'file') || force
+if ~exist(F.filepath(ftag), 'file') || force
 
     % Load trajectories
     Data = load(F.File.trajectories);
-    
-    Tr = struct('x', {}, 'y', {}, 'rho', {});
-    for i = 1
-        Tr(i).x = Data.P(i).x - Data.P(i).bx;
-        Tr(i).y = Data.P(i).y - Data.P(i).by;
-        Tr(i).rho = Data.P(i).rho;
-    end
 
     % Keep only the checked pillars
+    Ic = [Data.P(:).checked];
 
     % Detector object
-    Dtr = Analysis.Detector(Tr);
+    Dtr = Analysis.Detector(Data.P(Ic), verbose=verbose);
 
-    % Split & save
-    Dtr.split(rotate=true, padLength=30, save=fname);
+    % Detection
+    Dtr.detect(threshold=th_rho);
+    fprintf('%i events detected.\n', numel(Dtr.E));
 
+    % Skewness
+    Dtr.skewness
+
+    % Fit
+    Dtr.fitAllEvents(threshold=th_rho)
+    
+    % --- Save
+
+    if verbose
+        fprintf('Saving ...')
+        tic
+    end
+
+    E = Dtr.E;
+    save(F.filepath(ftag), 'E');
+
+    if verbose
+        fprintf(' %.02f sec\n', toc);
+    end
 end
-
-C = Dtr.Candidates
 

@@ -7,14 +7,11 @@ classdef Detector < matlab.mixin.Copyable
         
         % --- Input
         
-        % Trajectory
-        Tr
+        % Trajectories
+        P
         
-        % --- Output
-        
-        % Events
-        Candidates
-        Events
+        % Events        
+        E
         
         % --- Misc
         
@@ -27,19 +24,24 @@ classdef Detector < matlab.mixin.Copyable
     methods
         
         % --- Constructor -------------------------------------------------
-        function this = Detector(Tr, arg)
+        function this = Detector(P, arg)
             
             arguments
-                Tr struct
+                P struct = struct('x', {}, 'y', {});
                 arg.verbose logical = true
             end
 
-            this.Tr = Tr;
+            this.P = P;
             this.verbose = arg.verbose;
                  
         end
         
-   end
-    
+    end
+
+    methods (Static)
+      y = model(x, t0, s, A, tau, sat)
+      plotEvent(P, E, arg)
+    end
+
 end
 
