@@ -7,14 +7,16 @@ switch name
         this.use_rho = false;
         this.menu.options.use_r.Checked = 'on';
         this.menu.options.use_rho.Checked = 'off';
-        this.Update
+        
+        this.initFilters
 
     case 'use_rho'
 
         this.use_rho = true;
         this.menu.options.use_r.Checked = 'off';
         this.menu.options.use_rho.Checked = 'on';
-        this.Update
+
+        this.initFilters
         
     case 'dist_pdf'
 

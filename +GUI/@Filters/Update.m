@@ -69,13 +69,15 @@ switch this.layout.view.main.SelectedTab.Title
                     k = this.sel.traj(i);
                     if this.use_rho
                         r = this.P(k).rho;
+                        mr = 15;
                     else
                         r = this.P(k).r;
+                        mr = 15*this.sigma_x;
                     end
 
                     % --- Plot
 
-                    plot(this.axes.trace, i+r/max([15 ; r(:)]), '-', ...
+                    plot(this.axes.trace, i+r/max([mr ; r(:)]), '-', ...
                         color=this.cm(i,:), ...
                         LineWidth=0.1, ...
                         ButtonDownFcn={@this.MouseInput, 'trace'});
@@ -158,7 +160,12 @@ switch this.layout.view.main.SelectedTab.Title
 
                 x = Ev.frames(1) + linspace(-this.eventMargin, Ev.n-1+this.eventMargin, 200);
                 y = Analysis.Detector.model(x, Ev.t0, Ev.s, Ev.A, Ev.tau, Ev.sat);
-                plot(this.axes.event, x, y, 'k-');
+
+                if this.use_rho
+                    plot(this.axes.event, x, y, 'k-');
+                else
+                    plot(this.axes.event, x, y*this.sigma_x, 'k-');
+                end
 
                 title(this.axes.event, ...
                     ['traj ' num2str(Ev.idx) ...

@@ -12,10 +12,18 @@ switch feature
         Out = [this.E(Idx).skew];
 
     case {2, 'Slope'}
-        Out = [this.E(Idx).s];
+        if this.use_rho 
+            Out = [this.E(Idx).s];
+        else
+            Out = [this.E(Idx).s]*this.sigma_x;
+        end        
 
     case {3, 'Amplitude'}
-        Out = [this.E(Idx).A];
+        if this.use_rho 
+            Out = [this.E(Idx).A];
+        else
+            Out = [this.E(Idx).A]*this.sigma_x;
+        end  
 
     case {4, 'Ramp duration'}
         Out = [this.E(Idx).A]./[this.E(Idx).s];

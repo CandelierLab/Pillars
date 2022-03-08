@@ -14,7 +14,9 @@ classdef Filters < handle
 
         % --- Global settings
 
+        % Conversion r <-> rho
         use_rho = true
+        sigma_x = NaN;
 
         % Event selection
         nSel = struct('traj', 7)
@@ -26,7 +28,7 @@ classdef Filters < handle
 
         % --- Constants
 
-        nEv
+        nEv = 0
         nFeat
 
         eventMargin = 5
@@ -107,18 +109,18 @@ classdef Filters < handle
 
             % --- Options
 
-% % %             this.menu.options = struct('main', ...
-% % %                 uimenu(this.fig, 'Text','Options'));
-% % % 
-% % %             this.menu.options.use_r = uimenu(this.menu.options.main, ...
-% % %                 Text = 'Use r', ...
-% % %                 MenuSelectedFcn = {@this.setOption, 'use_r'}, ...
-% % %                 Checked = 'off');
-% % % 
-% % %             this.menu.options.use_rho = uimenu(this.menu.options.main, ...
-% % %                 Text = 'Use rho', ...
-% % %                 MenuSelectedFcn = {@this.setOption, 'use_rho'}, ...
-% % %                 Checked = 'on');
+            this.menu.options = struct('main', ...
+                uimenu(this.fig, 'Text','Options'));
+
+            this.menu.options.use_r = uimenu(this.menu.options.main, ...
+                Text = 'Use r', ...
+                MenuSelectedFcn = {@this.setOption, 'use_r'}, ...
+                Checked = 'off');
+
+            this.menu.options.use_rho = uimenu(this.menu.options.main, ...
+                Text = 'Use rho', ...
+                MenuSelectedFcn = {@this.setOption, 'use_rho'}, ...
+                Checked = 'on');
 
             % --- MAIN TAB ------------------------------------------------
 
@@ -211,6 +213,7 @@ classdef Filters < handle
 
             if ~isempty(this.F)
                 this.fig.Name = ['Filters | ' this.F.tag];
+                this.nEv = numel(this.E);
                 this.initFilters
                 % this.layout.view.main.SelectedTab = this.layout.view.filters;
                 this.Update;

@@ -1,5 +1,10 @@
 function initFilters(this,varargin)
 
+% --- Properties ----------------------------------------------------------
+
+% Sigma_x
+this.sigma_x = nanmean((this.P(1).fx-this.P(1).bx)./this.P(1).x);
+
 % --- Names ---------------------------------------------------------------
 
 rows = {'Skewness', ...
@@ -28,8 +33,13 @@ this.nFeat = numel(rows);
 T = {};
 
 skew = [this.E(:).skew];
-s = [this.E(:).s];
-A = [this.E(:).A];
+if this.use_rho 
+    s = [this.E(:).s];
+    A = [this.E(:).A];
+else
+    s = [this.E(:).s]*this.sigma_x;
+    A = [this.E(:).A]*this.sigma_x;
+end
 rd = A./s;
 sat = [this.E(:).sat];
 n = [this.E(:).n];
@@ -48,7 +58,11 @@ T{3} = [max(skew) max(s) max(A) max(rd) max(sat) max(n) max(tau) max(se)]';
 % Lower bound
 T{4} = zeros(this.nFeat,1);
 T{4}(1) = 1;
-T{4}(3) = 4.77;
+if this.use_rho 
+    T{4}(3) = this.th_rho;
+else
+    T{4}(3) = this.th_rho*this.sigma_x;
+end
 T{4}(6) = min(n);
 
 % Upper bound
