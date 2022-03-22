@@ -1,5 +1,7 @@
 function setOption(this,~,~, name)
 
+rho2r = @(x) this.sigma_x*x;
+
 switch name
 
     case 'use_r'
@@ -26,7 +28,15 @@ switch name
 
     case 'export2WS'
 
-        assignin('base', 'Events', this.E(this.sub));
+        Events = this.E(this.sub);
+
+        % Add r-based quantities
+        for i = 1:numel(Events)
+            Events(i).A_r = rho2r(Events(i).A);
+            Events(i).s_r = rho2r(Events(i).s);
+        end
+
+        assignin('base', 'Events', Events);
 
         fprintf('------------------------------------\n');
         fprintf('Successfully imported %i events in the ''Events'' variable of the workspace.\n', numel(this.sub));
@@ -35,7 +45,15 @@ switch name
 
         fname = uiputfile('*.mat');
         if fname
-            Events = this.E(this.sub);
+
+             Events = this.E(this.sub);
+
+             % Add r-based quantities
+             for i = 1:numel(Events)
+                 Events(i).A_r = rho2r(Events(i).A);
+                 Events(i).s_r = rho2r(Events(i).s);
+             end
+
             save(fname, 'Events');
 
             fprintf('------------------------------------\n');
